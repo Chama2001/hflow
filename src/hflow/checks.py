@@ -624,8 +624,6 @@ def camera_frame_stats(
 
     if not (0 <= bright_luma_threshold <= 255):
         raise ValueError("bright_luma_threshold must be between 0 and 255")
-
-    selected_cameras = list(cameras) if cameras is not None else episode.cameras
     selected_cameras = list(cameras) if cameras is not None else episode.cameras
     intermediates_by_topic = {
         topic: _camera_intermediates(
@@ -1390,10 +1388,7 @@ def camera_signal_quality(
         raise ValueError("freeze_noise_db must be finite")
 
     if not math.isfinite(freeze_min_duration_s) or freeze_min_duration_s <= 0:
-        raise ValueError("freeze_min_duration_s must be finite and positive")
-
-    selected_cameras = list(cameras) if cameras is not None else episode.cameras
-    
+        raise ValueError("freeze_min_duration_s must be finite and positive")    
     selected_cameras = list(cameras) if cameras is not None else episode.cameras
     measurements: dict[str, MeasurementValue] = {}
     for topic in selected_cameras:
