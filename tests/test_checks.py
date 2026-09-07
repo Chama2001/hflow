@@ -45,7 +45,6 @@ def test_camera_signal_quality_guard_validations(tmp_path: Path) -> None:
         camera_signal_quality(episode, freeze_min_duration_s=-1.0)
 
 
-def test_camera_signal_quality_guard_validations(tmp_path: Path) -> None:
     source = synthesize_episode(tmp_path / "episode.mcap")
     with hflow.Episode(source) as episode:
         with pytest.raises(TypeError):
