@@ -39,7 +39,7 @@ def test_camera_signal_quality_guard_validations(tmp_path: Path) -> None:
         camera_signal_quality(episode, black_pixel_threshold=300)
 
     with pytest.raises(ValueError):
-        camera_signal_quality(episode, freeze_noise_db=float('nan'))
+        camera_signal_quality(episode, freeze_noise_db=float("nan"))
 
     with pytest.raises(ValueError):
         camera_signal_quality(episode, freeze_min_duration_s=-1.0)
