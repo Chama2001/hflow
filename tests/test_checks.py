@@ -30,22 +30,8 @@ from hflow.transform import TransformConfig, write_canonical_episode
 
 
 def test_camera_signal_quality_guard_validations(tmp_path: Path) -> None:
-    episode = synthesize_episode(tmp_path / "episode.mcap")
-
-    with pytest.raises(TypeError):
-        camera_signal_quality(episode, black_pixel_threshold=True)
-
-    with pytest.raises(ValueError):
-        camera_signal_quality(episode, black_pixel_threshold=300)
-
-    with pytest.raises(ValueError):
-        camera_signal_quality(episode, freeze_noise_db=float("nan"))
-
-    with pytest.raises(ValueError):
-        camera_signal_quality(episode, freeze_min_duration_s=-1.0)
-
-    source = synthesize_episode(tmp_path / "episode.mcap")
-    with hflow.Episode(source) as episode:
+    episode_path = synthesize_episode(tmp_path / "episode.mcap")
+    with hflow.Episode(episode_path) as episode:
         with pytest.raises(TypeError):
             camera_signal_quality(episode, black_pixel_threshold=True)
 
