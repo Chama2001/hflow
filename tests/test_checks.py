@@ -30,9 +30,6 @@ from hflow.transform import TransformConfig, write_canonical_episode
 
 
 def test_camera_signal_quality_guard_validations(tmp_path: Path) -> None:
-    import pytest
-    from hflow.testing import synthesize_episode
-
     episode = synthesize_episode(tmp_path / "episode.mcap")
 
     with pytest.raises(TypeError):
