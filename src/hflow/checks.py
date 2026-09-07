@@ -1332,6 +1332,7 @@ def _curvature_run_intervals(
         )
     return intervals
 
+
 def camera_signal_quality(
     episode: Episode,
     *,
