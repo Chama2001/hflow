@@ -603,6 +603,29 @@ def camera_frame_stats(
     The trade is one right-to-left key parse (``rpartition``) plus one dict
     lookup per key on top of the ffmpeg decode each topic already pays (#182).
     """
+
+    import math
+
+    if type(black_pixel_threshold) is bool:
+        raise TypeError("black_pixel_threshold must be an integer")
+    if not (0 <= black_pixel_threshold <= 255):
+        raise ValueError("black_pixel_threshold must be between 0 and 255")
+
+    if type(black_frame_amount_pct) is bool:
+        raise TypeError("black_frame_amount_pct must be an integer")
+    if not (0 <= black_frame_amount_pct <= 100):
+        raise ValueError("black_frame_amount_pct must be between 0 and 100")
+
+    if not math.isfinite(freeze_min_duration_s) or freeze_min_duration_s <= 0:
+        raise ValueError("freeze_min_duration_s must be finite and positive")
+
+    if not math.isfinite(freeze_noise_db):
+        raise ValueError("freeze_noise_db must be finite")
+
+    if not (0 <= bright_luma_threshold <= 255):
+        raise ValueError("bright_luma_threshold must be between 0 and 255")
+
+    selected_cameras = list(cameras) if cameras is not None else episode.cameras
     selected_cameras = list(cameras) if cameras is not None else episode.cameras
     intermediates_by_topic = {
         topic: _camera_intermediates(
@@ -1355,6 +1378,22 @@ def camera_signal_quality(
     ``camera_frame_stats`` records which one measured; compare across a pin bump
     only after re-measuring, not by reading old rows next to new ones.
     """
+
+    import math
+
+    if type(black_pixel_threshold) is bool:
+        raise TypeError("black_pixel_threshold must be an integer")
+    if not (0 <= black_pixel_threshold <= 255):
+        raise ValueError("black_pixel_threshold must be between 0 and 255")
+
+    if not math.isfinite(freeze_noise_db):
+        raise ValueError("freeze_noise_db must be finite")
+
+    if not math.isfinite(freeze_min_duration_s) or freeze_min_duration_s <= 0:
+        raise ValueError("freeze_min_duration_s must be finite and positive")
+
+    selected_cameras = list(cameras) if cameras is not None else episode.cameras
+    
     selected_cameras = list(cameras) if cameras is not None else episode.cameras
     measurements: dict[str, MeasurementValue] = {}
     for topic in selected_cameras:
