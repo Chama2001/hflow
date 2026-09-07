@@ -20,6 +20,7 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 
 import numpy as np
+import math
 
 from hflow._video_measurement_toolchain import (
     measure_video_frame_statistics_for_hflow,
@@ -606,7 +607,7 @@ def camera_frame_stats(
 
     import math
 
-    if type(black_pixel_threshold) is bool:
+    if isinstance(black_pixel_threshold, bool):
         raise TypeError("black_pixel_threshold must be an integer")
     if not (0 <= black_pixel_threshold <= 255):
         raise ValueError("black_pixel_threshold must be between 0 and 255")
@@ -1376,9 +1377,8 @@ def camera_signal_quality(
     ``camera_frame_stats`` records which one measured; compare across a pin bump
     only after re-measuring, not by reading old rows next to new ones.
     """
-    import math
 
-    if type(black_pixel_threshold) is bool:
+    if isinstance(black_pixel_threshold, bool):
         raise TypeError("black_pixel_threshold must be an integer")
     if not (0 <= black_pixel_threshold <= 255):
         raise ValueError("black_pixel_threshold must be between 0 and 255")
