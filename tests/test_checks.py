@@ -45,6 +45,22 @@ def test_camera_signal_quality_guard_validations(tmp_path: Path) -> None:
         camera_signal_quality(episode, freeze_min_duration_s=-1.0)
 
 
+def test_camera_signal_quality_guard_validations(tmp_path: Path) -> None:
+    source = synthesize_episode(tmp_path / "episode.mcap")
+    with hflow.Episode(source) as episode:
+        with pytest.raises(TypeError):
+            camera_signal_quality(episode, black_pixel_threshold=True)
+
+        with pytest.raises(ValueError):
+            camera_signal_quality(episode, black_pixel_threshold=300)
+
+        with pytest.raises(ValueError):
+            camera_signal_quality(episode, freeze_noise_db=float("nan"))
+
+        with pytest.raises(ValueError):
+            camera_signal_quality(episode, freeze_min_duration_s=-1.0)
+
+
 def test_no_two_builtin_checks_claim_the_same_measurement_key(tmp_path: Path) -> None:
     """The catalog ranks measurement rows per (episode_id, key) and every step of
     one run shares that run's fingerprint and timestamp, so two checks emitting
