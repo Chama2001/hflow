@@ -1332,7 +1332,6 @@ def _curvature_run_intervals(
         )
     return intervals
 
-
 def camera_signal_quality(
     episode: Episode,
     *,
@@ -1376,7 +1375,6 @@ def camera_signal_quality(
     ``camera_frame_stats`` records which one measured; compare across a pin bump
     only after re-measuring, not by reading old rows next to new ones.
     """
-
     import math
 
     if type(black_pixel_threshold) is bool:
@@ -1388,7 +1386,8 @@ def camera_signal_quality(
         raise ValueError("freeze_noise_db must be finite")
 
     if not math.isfinite(freeze_min_duration_s) or freeze_min_duration_s <= 0:
-        raise ValueError("freeze_min_duration_s must be finite and positive")    
+        raise ValueError("freeze_min_duration_s must be finite and positive")
+
     selected_cameras = list(cameras) if cameras is not None else episode.cameras
     measurements: dict[str, MeasurementValue] = {}
     for topic in selected_cameras:
