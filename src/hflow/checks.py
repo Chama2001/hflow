@@ -16,11 +16,11 @@ rather than a shared ``message_count``.
 """
 
 import hashlib
+import math
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 
 import numpy as np
-import math
 
 from hflow._video_measurement_toolchain import (
     measure_video_frame_statistics_for_hflow,
