@@ -409,11 +409,24 @@ class TestFetchUri:
             "gs://bucket/",
             "s3://bucket/prefix/",
             "gs://bucket//",
+            "gs://bucket///",
             "gs://bucket",
             "s3://bucket",
         ]
         for uri in refused:
             pattern = rf"^bucket URI {re.escape(repr(uri))} names no object$"
+            with pytest.raises(ValueError, match=pattern):
+                fetch_uri(uri)
+
+    def test_bucket_uri_naming_no_bucket_says_so(self) -> None:
+        """A missing bucket is a different mistake from a missing object.
+
+        ``gs:///x`` names a key and no bucket. Reporting "names no object"
+        would point the reader at the half they got right, and would quote a
+        truncated parent prefix they never typed.
+        """
+        for uri in ["gs://", "gs:///", "gs:///x", "gs:////x", "s3:///key"]:
+            pattern = rf"^bucket URI {re.escape(repr(uri))} names no bucket$"
             with pytest.raises(ValueError, match=pattern):
                 fetch_uri(uri)
 

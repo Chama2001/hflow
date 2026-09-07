@@ -685,12 +685,15 @@ def fetch_uri(uri: "str | Path") -> Path:
     one-off ``app.process("gs://...")`` sources.
     """
     if isinstance(uri, str) and is_bucket_url(uri):
-        _scheme, _sep, remainder = uri.partition("://")
-        if "/" not in remainder or not remainder.partition("/")[2].strip("/"):
+        bucket, _, object_key = uri.partition("://")[2].partition("/")
+        # Two different mistakes, so two different sentences. ``gs:///x`` has a
+        # key and no bucket; calling that "names no object" sends the reader
+        # looking at the part they got right.
+        if not bucket:
+            raise ValueError(f"bucket URI {uri!r} names no bucket")
+        if not object_key or object_key.endswith("/"):
             raise ValueError(f"bucket URI {uri!r} names no object")
         parent_url, _, name = uri.rpartition("/")
-        if not name:
-            raise ValueError(f"bucket URI {uri!r} names no object")
         return BucketStorageRoot(parent_url).fetch(name)
     local_file = Path(uri)
     if local_file.is_dir():
