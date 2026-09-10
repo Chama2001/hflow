@@ -16,7 +16,6 @@ rather than a shared ``message_count``.
 """
 
 import hashlib
-import math
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 
@@ -605,26 +604,35 @@ def camera_frame_stats(
     lookup per key on top of the ffmpeg decode each topic already pays (#182).
     """
 
-    import math
-
+    # Ahead of selected_cameras so a bad threshold is refused on a camera-less
+    # episode too, which is where #447 found them silently skipped. bool is
+    # refused explicitly on every one: it subclasses int, so True reads as 1
+    # and sails through both the range comparisons and np.isfinite.
     if isinstance(black_pixel_threshold, bool):
-        raise TypeError("black_pixel_threshold must be an integer")
+        raise ValueError("black_pixel_threshold must be an int, got bool")
     if not (0 <= black_pixel_threshold <= 255):
         raise ValueError("black_pixel_threshold must be between 0 and 255")
 
-    if type(black_frame_amount_pct) is bool:
-        raise TypeError("black_frame_amount_pct must be an integer")
+    if isinstance(black_frame_amount_pct, bool):
+        raise ValueError("black_frame_amount_pct must be an int, got bool")
     if not (0 <= black_frame_amount_pct <= 100):
         raise ValueError("black_frame_amount_pct must be between 0 and 100")
 
-    if not math.isfinite(freeze_min_duration_s) or freeze_min_duration_s <= 0:
+    if isinstance(freeze_min_duration_s, bool):
+        raise ValueError("freeze_min_duration_s must be a float, got bool")
+    if not np.isfinite(freeze_min_duration_s) or freeze_min_duration_s <= 0:
         raise ValueError("freeze_min_duration_s must be finite and positive")
 
-    if not math.isfinite(freeze_noise_db):
+    if isinstance(freeze_noise_db, bool):
+        raise ValueError("freeze_noise_db must be a float, got bool")
+    if not np.isfinite(freeze_noise_db):
         raise ValueError("freeze_noise_db must be finite")
 
+    if isinstance(bright_luma_threshold, bool):
+        raise ValueError("bright_luma_threshold must be an int, got bool")
     if not (0 <= bright_luma_threshold <= 255):
         raise ValueError("bright_luma_threshold must be between 0 and 255")
+
     selected_cameras = list(cameras) if cameras is not None else episode.cameras
     intermediates_by_topic = {
         topic: _camera_intermediates(
@@ -1378,15 +1386,20 @@ def camera_signal_quality(
     only after re-measuring, not by reading old rows next to new ones.
     """
 
+    # Same shape as camera_frame_stats above, and for the same reason (#447).
     if isinstance(black_pixel_threshold, bool):
-        raise TypeError("black_pixel_threshold must be an integer")
+        raise ValueError("black_pixel_threshold must be an int, got bool")
     if not (0 <= black_pixel_threshold <= 255):
         raise ValueError("black_pixel_threshold must be between 0 and 255")
 
-    if not math.isfinite(freeze_noise_db):
+    if isinstance(freeze_noise_db, bool):
+        raise ValueError("freeze_noise_db must be a float, got bool")
+    if not np.isfinite(freeze_noise_db):
         raise ValueError("freeze_noise_db must be finite")
 
-    if not math.isfinite(freeze_min_duration_s) or freeze_min_duration_s <= 0:
+    if isinstance(freeze_min_duration_s, bool):
+        raise ValueError("freeze_min_duration_s must be a float, got bool")
+    if not np.isfinite(freeze_min_duration_s) or freeze_min_duration_s <= 0:
         raise ValueError("freeze_min_duration_s must be finite and positive")
 
     selected_cameras = list(cameras) if cameras is not None else episode.cameras
